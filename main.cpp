@@ -1,8 +1,11 @@
 #include <iostream>
+
 #include "sphere.h"
 #include "hitablelist.h"
 #include "float.h"
-
+#include "camera.h"
+#include "random"
+#define random(a,b) (rand()%(b-a+1)+a)
 using namespace std;
 
 //float hit_sphere(const vec3& center,float radius,const ray &r){
@@ -36,6 +39,7 @@ int main() {
 
     int x = 2000;
     int y = 1000;
+    int ns = 100;
     vec3 lower_left_corner(-2.0,-1.0,-1);
     vec3 horizontal(4.0,0.0,0.0);
     vec3 vertical(0.0,2.0,0.0);
@@ -44,17 +48,24 @@ int main() {
     list[0] = new sphere(vec3(0,0,-1),0.5);;
     list[1] = new sphere(vec3(0,-100.5,-1),100.0);
     hitable *world= new hitablelist(list,2);
+    camera cam;
     fprintf(fp,"P3\n%d %d\n255\n",x,y);
     for (int j = y -1; j >=0 ; j--) {
         for (int i = 0; i < x; i++) {
-           float ratio_x =  float(i)/float(x);
-           float ratio_y =  float(j)/float(y);
+            vec3 col(0,0,0);
+            for (int k = 0; k < ns; k++) {
+                float ratio_x =  float(i + float(random(0,100))/100.0)/float(x);
+                float ratio_y =  float(j + float(random(0,100))/100.0)/float(y);
+                ray r = cam.get_ray(ratio_x,ratio_y);
+                vec3 p = r.point_at_parameter(2.0);
+                col = col+color(r, world);
+            }
 
-           ray r(origin,lower_left_corner+ratio_x*horizontal+ratio_y*vertical);
-           vec3 pixel_color = color(r,world);
-           int rp = int(255.99*pixel_color.x());
-           int gp = int(255.99*pixel_color.y());
-           int bp = int(255.99*pixel_color.z());
+
+           col = col/float(ns);
+           int rp = int(255.99*col.x());
+           int gp = int(255.99*col.y());
+           int bp = int(255.99*col.z());
            fprintf(fp,"%d %d %d\n",rp,gp,bp);
         }
     }
