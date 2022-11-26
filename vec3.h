@@ -58,6 +58,11 @@ inline vec3 cross(const vec3& v1, const vec3& v2){
                 );
 }
 
+inline vec3 reflect(const vec3& v, const vec3& n){
+    return v-2*dot(v,n)*n;
+}
+
 inline vec3 vec3::make_unit_vec() {
     return *this/ this->length();
 }
+
