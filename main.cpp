@@ -42,13 +42,12 @@ int main()
     int nx =720;
     int ny=360;
     // 采样数量ns
-    int ns = 10;
-//    camera cam(vec3(-2,2,1),vec3(0,0,-1),vec3(0,1,0),90, float(nx)/float(ny));
+    int ns = 100;
+
+    camera cam(vec3(0,0,1),vec3(0,0,-1),vec3(0,1,0),90, float(nx)/float(ny),0.1,1.5);
     FILE* fp;
     fp=fopen("test.ppm","w");
     fprintf(fp,"P3\n%d %d\n255\n",nx,ny);
-
-    camera cam;
 
     hitable *list[4];
     // 球1
